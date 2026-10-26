@@ -91,7 +91,7 @@ get_brochure_user_prompt("HuggingFace", "https://huggingface.co")
 
 def create_brochure(company_name, url):
     response = client.chat.completions.create(
-        model="gpt-4.1-mini",
+        model=model,
         messages=[
             {"role": "system", "content": brochure_system_prompt},
             {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
@@ -101,3 +101,18 @@ def create_brochure(company_name, url):
     print(result)
 create_brochure("HuggingFace", "https://huggingface.co")
 
+def stream_brochure(company_name, url):
+    stream = client.chat.completions.create(
+        model = model,
+        messages=[
+            {"role": "system", "content": brochure_system_prompt},
+            {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
+        ],
+        stream=True
+        
+    )
+
+    for chunk in stream:
+      print(chunk.choices[0].delta.content or "" , end ="", flush=True)
+       
+stream_brochure("HuggingFace", "https://huggingface.co")
